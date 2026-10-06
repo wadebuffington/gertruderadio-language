@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Language Studio — Gertrude Radio</title>
+<meta name="description" content="Learn to read and write Japanese: hiragana and first kanji, with spaced repetition, games and a handwriting canvas.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E3%81%82%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="kit/kit.css">
+<link rel="stylesheet" href="app/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the content</a>
+
+<div class="kit-bar">
+  <span><span class="wm-a">Gertrude</span><span class="wm-b">Radio</span> <span class="wm-c">Language</span></span>
+
+  <nav class="app-nav" aria-label="Main">
+    <a href="#/" data-route="home">Today</a>
+    <a href="#/learn" data-route="learn">Learn</a>
+    <a href="#/games" data-route="games">Games</a>
+    <a href="#/settings" data-route="settings">Settings</a>
+  </nav>
+
+  <div class="kit-group">
+    <label class="sr-only" for="kit-theme">Appearance</label>
+    <select id="kit-theme" title="Appearance">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+      <option value="epiphany">Epiphany Press</option>
+      <option value="nightdesk">Night Desk</option>
+      <option value="hacker">Terminal</option>
+      <option value="macwrite">MacWrite 1984</option>
+    </select>
+    <label class="sr-only" for="kit-scheme">Colour scheme</label>
+    <select id="kit-scheme" title="Colour scheme" hidden>
+      <option value="">Plain light</option>
+      <option value="custom">Pick your own…</option>
+    </select>
+    <label class="sr-only" for="kit-pastelpick">Interface colour</label>
+    <input type="color" id="kit-pastelpick" value="#A0C4FF"
+           title="Pick a colour. Its partner is worked out for you." hidden>
+    <label class="sr-only" for="kit-signal">Signal colour</label>
+    <input type="color" id="kit-signal" value="#FF9F1C"
+           title="Signal colour. Everything lit is derived from it." hidden>
+    <label class="sr-only" for="kit-phosphor">Terminal colour</label>
+    <select id="kit-phosphor" title="Terminal colour" hidden>
+      <option value="">All four colours</option>
+      <option value="green">Green phosphor</option>
+      <option value="amber">Amber phosphor</option>
+      <option value="red">Red phosphor</option>
+      <option value="blue">Blue phosphor</option>
+      <option value="white">White phosphor</option>
+      <option value="custom">Don't like the colour? Pick your own…</option>
+    </select>
+    <input type="color" id="kit-pick" value="#3DFF6E" title="Your own phosphor colour" hidden>
+    <button type="button" id="kit-crt" aria-pressed="false" title="Scanlines and phosphor glow">CRT</button>
+    <span class="kit-dial" id="kit-crtint-dial" hidden>
+      <label class="sr-only" for="kit-crtint">CRT intensity</label>
+      <input type="range" id="kit-crtint" min="10" max="100" step="5" value="100" title="CRT intensity">
+      <output for="kit-crtint" id="kit-crtint-out">100%</output>
+    </span>
+  </div>
+</div>
+
+<div id="crt" aria-hidden="true">
+  <div class="wash"></div><div class="lines"></div><div class="glare"></div><div class="vignette"></div>
+</div>
+
+<div class="kit-wrap" id="main" tabindex="-1">
+  <div class="kit-sheet app-sheet">
+    <main class="kit-surface" id="view"><p>Loading…</p></main>
+  </div>
+</div>
+
+<div id="live" class="sr-only" aria-live="polite"></div>
+<div id="toasts" aria-hidden="true"></div>
+<div id="fx" aria-hidden="true"></div>
+
+<noscript><p style="padding:1em">Language Studio needs JavaScript.</p></noscript>
+
+<script src="kit/kit.js"></script>
+<script src="vendor/ts-fsrs.umd.js"></script>
+<script src="packs/ja/pack.js"></script>
+<script src="app/store.js"></script>
+<script src="app/engine.js"></script>
+<script src="app/writing.js"></script>
+<script src="app/games.js"></script>
+<script src="app/ui.js"></script>
+</body>
+</html>

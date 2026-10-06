@@ -1,0 +1,403 @@
+/* Gertrude Radio Interface Kit v3.3 — copied verbatim from Interface-Kit-v3.3.html.
+   Do not edit here; update the kit and re-copy. Section 8 (demo sheet) removed as the kit instructs. */
+/* ======================================================================
+   1. THEMES
+   Everything reads from variables, so a new theme is a new block of
+   variables and nothing else in the app changes.
+   ====================================================================== */
+:root{
+  --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono-font: "Courier Final Draft","Courier Prime","Courier New",Courier,monospace;
+  --serif-font: Georgia,"EB Garamond","Iowan Old Style","Times New Roman",serif;
+
+  --chrome-bg:#e9e9ec; --chrome-fg:#1b1b1f; --chrome-line:#c3c3cb;
+  --menu-bg:#f6f6f8; --menu-hover:#dfe4ea;
+  --app-bg:#9ea3ad;                     /* the desk the page sits on   */
+  --sheet:#ffffff; --sheet-fg:#111214;  /* the page itself             */
+  --sheet-edge:#00000022;
+  --accent:#2f5db0; --accent-fg:#ffffff;
+  --panel-bg:#f3f3f5; --panel-fg:#22232a;
+  --muted:#63656e; --rule:#b9bcc6; --focus:#0a58ff;
+  --card-bg:#fffdf3; --card-edge:#d8d3bd;
+  --radius:6px; --sheet-shadow:0 2px 14px rgba(0,0,0,.28);
+
+  /* v3.1 ink. Accented text — headings, names, emphasis. The default is
+     currentColor, not inherit: as a text colour the two behave the same, but
+     currentColor also survives being used as a background or a border, which
+     `inherit` does not — it would take the parent's background and paint a
+     swatch that is not there. Only a scheme ever writes real values here. */
+  --ink-a:currentColor; --ink-b:currentColor; --ink-c:currentColor;
+
+  /* v3 dials. Both are written from script; both have sane defaults so
+     the kit behaves correctly if the script never runs. */
+  --crt-intensity:1;        /* 0.10 – 1, scales the whole CRT effect  */
+}
+html[data-theme="dark"]{
+  --chrome-bg:#1c1d22; --chrome-fg:#e6e7ec; --chrome-line:#33343d;
+  --menu-bg:#24262c; --menu-hover:#343742;
+  --app-bg:#121317; --sheet:#1a1b20; --sheet-fg:#e3e4ea; --sheet-edge:#ffffff14;
+  --accent:#5a8dee; --accent-fg:#0b0c10;
+  --panel-bg:#1f2027; --panel-fg:#d9dae1;
+  --muted:#9a9cab; --rule:#3a3c47; --focus:#7aa7ff;
+  --card-bg:#232530; --card-edge:#3a3d4b;
+  --sheet-shadow:0 2px 18px rgba(0,0,0,.55);
+}
+/* Epiphany Press house style: crimson, gold, teal, parchment. */
+html[data-theme="epiphany"]{
+  --ui-font: var(--serif-font);
+  --chrome-bg:#efe6d2; --chrome-fg:#2e2519; --chrome-line:#cbbb96;
+  --menu-bg:#f7f0e0; --menu-hover:#e6d9b8;
+  --app-bg:#c8b995; --sheet:#fbf6ea; --sheet-fg:#241d14; --sheet-edge:#00000020;
+  --accent:#9B1B30; --accent-fg:#fbf6ea;          /* crimson */
+  --panel-bg:#f4ecd8; --panel-fg:#33291c;
+  --muted:#6d5c42; --rule:#c2b088;
+  --focus:#1F6E6E;                                 /* teal    */
+  --gold:#B8860B;
+  --card-bg:#fdf8ec; --card-edge:#c2b088;
+  --sheet-shadow:0 2px 14px rgba(60,40,10,.30);
+}
+/* NIGHT DESK.  A broadcast console at four in the morning.
+
+   Not a starship. The vocabulary here is 1970s transmitter racks and studio
+   talkback panels: blocked chrome, elbow joins, a signal colour that means
+   something is live, and type set like a channel ident. Anything that looked
+   like somebody else's franchise was cut, because a look you cannot put your
+   own name on is a look you cannot ship.
+
+   THE SCREEN IS A TINTED NEAR-BLACK. Same rule as the phosphors, same reason:
+   on #000 a scanline has nothing to darken and the CRT effect vanishes.
+
+   Everything below is the console's fixed structure. The one colour that
+   changes is the signal, and every value derived from it is solved against
+   the surface it lands on — see lightTo(). */
+html[data-theme="nightdesk"]{
+  --ui-font:"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --chrome-bg:#0E141C; --chrome-fg:#D3E0EC; --chrome-line:#1E2C3A;
+  --menu-bg:#121A24; --menu-hover:#1B2632;
+  --app-bg:#070A0F; --sheet:#0C1219; --sheet-fg:#C9D6E2; --sheet-edge:#243748;
+  --accent:#FF9F1C; --accent-fg:#070A0F;
+  --panel-bg:#0E141C; --panel-fg:#C9D6E2;
+  --muted:#8195A9; --rule:#1E2C3A; --focus:#7FD4FF;
+  --card-bg:#101822; --card-edge:#24374A;
+  --ink-a:#FFB65A; --ink-b:#7FD4FF; --ink-c:#8FD9AE;
+  --radius:2px; --sheet-shadow:0 0 0 1px #16202B, 0 18px 40px rgba(0,0,0,.6);
+  /* the elbow radius. One number so every corner in the theme agrees. */
+  --elbow:18px;
+}
+
+/* Terminal. Palette shared with Scriptorium so every app reads as one family. */
+html[data-theme="hacker"]{
+  --ui-font:"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --chrome-bg:#08130A; --chrome-fg:#3DFF6E; --chrome-line:#123018;
+  --menu-bg:#08130A; --menu-hover:#123018;
+  --app-bg:#050A06; --sheet:#050A06; --sheet-fg:#3DFF6E; --sheet-edge:#123018;
+  --accent:#FFC93C; --accent-fg:#050A06;
+  --panel-bg:#08130A; --panel-fg:#3DFF6E;
+  --muted:#1E7A38; --rule:#123018; --focus:#9CFFB8;
+  --card-bg:#08130A; --card-edge:#123018;
+  --sheet-shadow:none; --radius:2px;
+}
+/* The 1984 Macintosh. Its charm is crispness: never bloom this one. */
+html[data-theme="macwrite"]{
+  --ui-font: Geneva,Verdana,"Lucida Grande",Tahoma,sans-serif;
+  --chrome-bg:#ffffff; --chrome-fg:#000000; --chrome-line:#000000;
+  --menu-bg:#ffffff; --menu-hover:#000000;
+  --app-bg:#8f8f8f; --sheet:#ffffff; --sheet-fg:#000000; --sheet-edge:#000000;
+  --accent:#000000; --accent-fg:#ffffff;
+  --panel-bg:#ffffff; --panel-fg:#000000;
+  --muted:#000000; --rule:#000000; --focus:#000000;
+  --card-bg:#ffffff; --card-edge:#000000;
+  --radius:0px; --sheet-shadow:2px 2px 0 #000;
+}
+
+/* ======================================================================
+   2. PHOSPHORS  (terminal theme only)
+   Single-colour tubes: emphasis comes from brightness, not hue.
+   THE SCREEN IS A TINTED NEAR-BLACK, NEVER PURE #000. On pure black a
+   scanline has nothing to darken and the whole CRT effect disappears.
+   That one mistake cost several builds.
+   ====================================================================== */
+html[data-theme="hacker"][data-phosphor="green"]{
+  --chrome-bg:#08130A; --chrome-fg:#3DFF6E; --chrome-line:#123018; --menu-bg:#08130A;
+  --menu-hover:#123018; --rule:#123018; --app-bg:#050A06; --sheet:#050A06;
+  --sheet-fg:#3DFF6E; --sheet-edge:#123018; --panel-bg:#08130A; --panel-fg:#3DFF6E;
+  --card-bg:#08130A; --card-edge:#123018; --accent:#9CFFB8; --accent-fg:#050A06;
+  --muted:#1E7A38; --focus:#9CFFB8;
+}
+html[data-theme="hacker"][data-phosphor="amber"]{
+  --chrome-bg:#160E04; --chrome-fg:#FFB84A; --chrome-line:#3E2A08; --menu-bg:#160E04;
+  --menu-hover:#3E2A08; --rule:#3E2A08; --app-bg:#0A0703; --sheet:#0A0703;
+  --sheet-fg:#FFB84A; --sheet-edge:#3E2A08; --panel-bg:#160E04; --panel-fg:#FFB84A;
+  --card-bg:#160E04; --card-edge:#3E2A08; --accent:#FFD9A0; --accent-fg:#0A0703;
+  --muted:#8A5F14; --focus:#FFD9A0;
+}
+html[data-theme="hacker"][data-phosphor="red"]{
+  --chrome-bg:#1A0709; --chrome-fg:#FF4545; --chrome-line:#421317; --menu-bg:#1A0709;
+  --menu-hover:#421317; --rule:#421317; --app-bg:#0C0405; --sheet:#0C0405;
+  --sheet-fg:#FF4545; --sheet-edge:#421317; --panel-bg:#1A0709; --panel-fg:#FF4545;
+  --card-bg:#1A0709; --card-edge:#421317; --accent:#FFB3B3; --accent-fg:#0C0405;
+  --muted:#932A2A; --focus:#FFB3B3;
+}
+html[data-theme="hacker"][data-phosphor="blue"]{
+  --chrome-bg:#06151F; --chrome-fg:#6FD6FF; --chrome-line:#0E3247; --menu-bg:#06151F;
+  --menu-hover:#0E3247; --rule:#0E3247; --app-bg:#030A10; --sheet:#030A10;
+  --sheet-fg:#6FD6FF; --sheet-edge:#0E3247; --panel-bg:#06151F; --panel-fg:#6FD6FF;
+  --card-bg:#06151F; --card-edge:#0E3247; --accent:#C6EEFF; --accent-fg:#030A10;
+  --muted:#22738F; --focus:#C6EEFF;
+}
+html[data-theme="hacker"][data-phosphor="white"]{
+  --chrome-bg:#0C1118; --chrome-fg:#E6EEF5; --chrome-line:#222C36; --menu-bg:#0C1118;
+  --menu-hover:#222C36; --rule:#222C36; --app-bg:#05070A; --sheet:#05070A;
+  --sheet-fg:#E6EEF5; --sheet-edge:#222C36; --panel-bg:#0C1118; --panel-fg:#E6EEF5;
+  --card-bg:#0C1118; --card-edge:#222C36; --accent:#FFFFFF; --accent-fg:#05070A;
+  --muted:#78868F; --focus:#FFFFFF;
+}
+
+/* ======================================================================
+   2B. NIGHT DESK SHAPES
+   Every other theme is a block of variables and nothing else. This one is
+   not, and it is worth being honest about why: elbows and capped blocks are
+   SHAPES, and no variable makes a shape. So this is the one theme-scoped
+   stylesheet in the kit.
+
+   It is kept to the smallest set that carries the idea — a cap, an elbow, a
+   rule, a bracket — with no images, no clip-path, and nothing that changes
+   layout. Delete this block and Night Desk degrades to an ordinary dark
+   theme rather than breaking.
+   ====================================================================== */
+html[data-theme="nightdesk"] .kit-bar{
+  background:var(--app-bg);
+  border-bottom:2px solid var(--chrome-line);
+  padding:8px 12px 10px;
+  gap:0;
+}
+/* The station ident. Elbow on one corner only: a square block with a single
+   large radius is the entire vocabulary, used sparingly. */
+html[data-theme="nightdesk"] .kit-bar > span:first-child{
+  background:var(--accent); color:var(--accent-fg);
+  font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+  font-size:11px; padding:8px 18px 8px 14px;
+  border-radius:var(--radius) var(--radius) var(--radius) var(--elbow);
+  margin-right:10px;
+}
+html[data-theme="nightdesk"] .wm-a{opacity:1}
+html[data-theme="nightdesk"] .wm-b{color:inherit}
+/* The control cluster reads as one rack, capped at both ends. */
+html[data-theme="nightdesk"] .kit-group{
+  border:1px solid var(--chrome-line); border-left:0; border-right:0;
+  background:var(--chrome-bg);
+  padding:5px 12px; gap:8px; position:relative;
+  border-radius:0;
+}
+html[data-theme="nightdesk"] .kit-group::before,
+html[data-theme="nightdesk"] .kit-group::after{
+  content:""; position:absolute; top:0; bottom:0; width:9px;
+  background:var(--chrome-line);
+}
+html[data-theme="nightdesk"] .kit-group::before{
+  left:-9px; border-radius:var(--elbow) 0 0 var(--elbow);
+}
+html[data-theme="nightdesk"] .kit-group::after{
+  right:-9px; border-radius:0 var(--elbow) var(--elbow) 0;
+  background:var(--accent);
+}
+html[data-theme="nightdesk"] .kit-bar select,
+html[data-theme="nightdesk"] .kit-bar button,
+html[data-theme="nightdesk"] .kit-bar input[type=color]{
+  background:var(--menu-bg); border-color:var(--chrome-line);
+  text-transform:uppercase; letter-spacing:.06em; font-size:11px;
+}
+html[data-theme="nightdesk"] .kit-bar button{
+  border-radius:var(--radius) 10px 10px var(--radius); padding:6px 14px 6px 11px;
+}
+html[data-theme="nightdesk"] .kit-bar button[aria-pressed="true"]{
+  background:var(--accent); color:var(--accent-fg); border-color:var(--accent);
+}
+html[data-theme="nightdesk"] .kit-bar output{letter-spacing:.06em}
+/* The page is a lit pane in a dark rack. Brackets on two corners rather than
+   a full border: an unbroken rectangle in this vocabulary reads as a dialog,
+   and the sheet is not a dialog. */
+html[data-theme="nightdesk"] .kit-sheet{
+  border:1px solid var(--sheet-edge); border-radius:var(--radius);
+  position:relative;
+}
+html[data-theme="nightdesk"] .kit-sheet::after{
+  content:""; position:absolute; inset:-1px; pointer-events:none; z-index:2;
+  border:2px solid transparent;
+  border-top-color:var(--accent); border-left-color:var(--accent);
+  border-radius:var(--elbow) var(--radius) var(--radius) var(--radius);
+  -webkit-mask:linear-gradient(135deg,#000 0 74px,transparent 74px);
+          mask:linear-gradient(135deg,#000 0 74px,transparent 74px);
+}
+html[data-theme="nightdesk"] .kit-surface h2{
+  letter-spacing:.16em;
+  border-left:3px solid var(--accent); padding-left:10px; margin-left:-13px;
+}
+@media (max-width:760px){
+  /* The caps hang outside the group. On a phone that is off the screen, so
+     the rack becomes a plain block rather than a clipped one. */
+  html[data-theme="nightdesk"] .kit-group{border:1px solid var(--chrome-line);
+    border-radius:var(--radius) var(--elbow) var(--elbow) var(--radius)}
+  html[data-theme="nightdesk"] .kit-group::before,
+  html[data-theme="nightdesk"] .kit-group::after{display:none}
+}
+
+/* ======================================================================
+   3. CRT EFFECT
+   Four layers over the whole viewport, click-through, off by default
+   because it costs legibility.
+
+   WHAT MAKES IT WORK, and what broke it three separate times:
+
+   a) NO mix-blend-mode. The overlay has its own stacking context, so a
+      blend mode blends it against itself and shows nothing at all.
+   b) The screen must be a tinted near-black (section 2). Darkening pure
+      black does nothing.
+   c) A faint white wash lifts the blacks just enough for a 19% dark band
+      to register, the way a real tube's ambient glow does.
+   d) ONE text shadow, and only on the reading surface. Two shadows read
+      as blur, not bloom. Glowing the menus makes the app unusable.
+   e) NO vertical aperture grille and NO scanline drift. A 3px vertical
+      pattern and a moving pattern both moire against different pixel
+      pitches, producing wide banding that appears on one monitor and
+      not another.
+
+   NEW IN v3 — INTENSITY.
+   One variable dims the entire effect, and it is applied in ONE place:
+   the opacity of #crt. Dimming four layers independently means four
+   numbers to keep in step and a vignette that outlives its scanlines.
+   The bloom is not part of #crt, so it scales separately, on the blur
+   radius rather than the alpha — a shadow you fade to nothing still
+   costs a repaint, and a shadow you shrink to nothing genuinely stops.
+   ====================================================================== */
+#crt{position:fixed;inset:0;pointer-events:none;z-index:300;display:none;
+  opacity:var(--crt-intensity)}
+body.crt #crt{display:block}
+#crt .wash{position:absolute;inset:0;background:rgba(255,255,255,.020)}
+#crt .lines{position:absolute;inset:0;
+  background:repeating-linear-gradient(to bottom,
+    rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,.19) 2px, rgba(0,0,0,.19) 4px)}
+#crt .vignette{position:absolute;inset:0;
+  background:radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,.48) 100%)}
+#crt .glare{position:absolute;inset:0;opacity:.04;
+  background:linear-gradient(115deg, transparent 36%, rgba(255,255,255,.95) 50%, transparent 64%)}
+/* the bloom, on the reading surface alone */
+body.crt.glowable .kit-surface{text-shadow:0 0 calc(4px * var(--crt-intensity)) currentColor}
+body.crt.glowable .kit-sheet{box-shadow:0 0 calc(44px * var(--crt-intensity)) rgba(255,255,255,.07)}
+@media (prefers-reduced-motion: reduce){ #crt .glare{display:none} }
+
+/* ----------------------------------------------------------------------
+   3B. PAGE TEXTURE — REMOVED IN v3.3.
+   The parchments and the papyrus went to OpenSlate, which is the only
+   thing that wanted paper behind its type. Kit-Addendum-Page-Textures.html
+   beside this file restores them in one paste. The two lines below are the
+   half of it that is not optional: .kit-sheet's children need position and
+   a z-index or ANY layer at inset:0 paints over them, and that is worth
+   keeping here whether or not a texture is ever laid in.
+   ---------------------------------------------------------------------- */
+.kit-sheet{position:relative}
+.kit-sheet > *{position:relative;z-index:1}
+
+/* ======================================================================
+   4. MOBILE
+   Every line here fixes something that was genuinely broken on a phone.
+   ====================================================================== */
+
+/* html carries the background too. Phones expose the canvas BEHIND the
+   document when you rubber-band past the top, and a bare canvas is white.
+   This is the light strip that appears on mobile and never on desktop. */
+html{background:var(--app-bg);overscroll-behavior:none}
+html,body{margin:0;background:var(--app-bg);color:var(--chrome-fg);font-family:var(--ui-font)}
+body{overscroll-behavior:none}
+/* dvh keeps the layout honest while phone browser bars slide in and out */
+@supports (height:100dvh){ html,body{min-height:100dvh} }
+
+/* Any scrolling container must paint its own background. iOS bounces the
+   INNER scroller and paints the exposed strip with THAT scroller's
+   background: a transparent one shows the webview underneath, which is
+   white. This is the second half of the same bug. */
+.kit-wrap{background:var(--app-bg);overscroll-behavior:contain}
+
+@media (max-width:760px){
+  /* Lock to vertical. Percentage widths mean nothing can be wider than the
+     screen, and pan-y stops the browser trying to move sideways at all. */
+  html,body{overflow-x:hidden;overscroll-behavior-x:none}
+  .kit-wrap{overflow-x:hidden;touch-action:pan-y;padding:10px 4px 40vh}
+  .kit-sheet{width:100%;max-width:100%;border:0;box-shadow:none}
+  body.crt.glowable .kit-sheet{box-shadow:none}
+  /* On desktop the page floats in a field and a 1px border reads as the edge
+     of paper. On a phone it fills the width and reads as a stray light line. */
+
+  /* Controls must WRAP, never scroll sideways: a colour picker you have to
+     go hunting for may as well not be there. Bars containing dropdown menus
+     must never be given overflow, or the dropdowns are clipped shut. */
+  .kit-bar{flex-wrap:wrap}
+  /* The 34px floor is unconditional now — section 7. All a phone needs
+     here is a shorter slider so the dial and its readout still fit a row. */
+  .kit-bar input[type=range]{width:78px}
+}
+
+/* ======================================================================
+   5. PRINT
+   Overlays never reach paper. Neither does parchment: a texture that
+   costs nothing on a screen costs a toner cartridge on a printer.
+   ====================================================================== */
+@media print{
+  #crt{display:none!important}
+  body.crt.glowable .kit-surface{text-shadow:none!important}
+  html,body{background:#fff;color:#000}
+  .kit-wrap{background:#fff;padding:0}
+  .kit-sheet{box-shadow:none;border:0;width:auto;padding:0;background:#fff;color:#000}
+}
+
+/* ======================================================================
+   6. ACCESSIBILITY  (Section 508 — non-negotiable, build it in from the start)
+   Every slider has a real label, a visible numeric readout wired to it with
+   `for`, and works from the keyboard the moment it appears. A dial nobody
+   can reach is a dial that is not there.
+   ====================================================================== */
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:8px;top:-60px;z-index:999;background:var(--accent);
+  color:var(--accent-fg);padding:10px 14px;border-radius:var(--radius);transition:top .12s}
+.skip:focus{top:8px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+/* ======================================================================
+   7. THE BAR — REQUIRED if you use the kit's controls
+   v3.2 filed this under "demo chrome, delete all of this". That was wrong
+   and it cost a build to find out: Night Desk's shapes in section 2B are
+   written against .kit-bar and .kit-group, so deleting this block leaves a
+   theme styling elements that no longer have any padding, and a row of
+   17-pixel-tall dropdowns nobody can hit. The demo SHEET is genuinely
+   deletable and is now section 8.
+   ====================================================================== */
+.kit-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;
+  background:var(--chrome-bg);border-bottom:1px solid var(--chrome-line);position:relative;z-index:5}
+.kit-bar select,.kit-bar button,.kit-bar input[type=color]{
+  background:var(--menu-bg);color:var(--chrome-fg);border:1px solid var(--chrome-line);
+  border-radius:var(--radius);padding:6px 9px;font-size:13px;cursor:pointer;
+  /* 34px at EVERY width, not only on a phone. v3.2 had this floor inside
+     the mobile media query, which is the wrong way round: a pointer is
+     less accurate than a thumb for a lot of people, and 24px is the WCAG
+     2.2 minimum on a desktop too. */
+  min-height:34px}
+.kit-bar input[type=color]{width:42px;height:34px;padding:2px}
+.kit-bar button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+/* RULE, v3: the look controls are ONE group and the CRT toggle is the last
+   member of it. Never park CRT at the other end of a toolbar. */
+.kit-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:4px 8px;border:1px solid var(--chrome-line);border-radius:var(--radius)}
+/* A slider and its readout are one object and must never be split by a wrap.
+   Hiding the WRAPPER rather than the two children also keeps the flex gap
+   from leaving a hole where the dial used to be. */
+.kit-dial{display:inline-flex;align-items:center;gap:6px}
+.kit-dial[hidden]{display:none}   /* an author display beats UA [hidden]. Say it. */
+.kit-bar input[type=range]{accent-color:var(--accent);width:104px;min-height:34px;
+  background:transparent;border:0;padding:0;cursor:pointer;vertical-align:middle}
+.kit-bar output{font-size:12px;color:var(--muted);min-width:36px;
+  font-variant-numeric:tabular-nums}
+.wm-a{opacity:.62;font-weight:700}
+.wm-b{color:var(--accent);font-weight:700}
+html[data-theme="macwrite"] .wm-b{color:inherit;text-decoration:underline}
