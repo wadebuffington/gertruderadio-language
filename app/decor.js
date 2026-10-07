@@ -87,6 +87,11 @@ LS.Decor = (function () {
   function motifSvg(culture, name) {
     if (!cache[name]) {
       const m = culture.motifs[name];
+      if (m.image) {
+        // A painted piece: an image with the paper already lifted out.
+        cache[name] = `<img src="${m.image}" alt="" decoding="async" draggable="false">`;
+        return cache[name];
+      }
       const body = typeof m.draw === "function" ? m.draw(api) : m.draw;
       cache[name] = `<svg viewBox="${m.viewBox}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${body}</svg>`;
     }
@@ -95,7 +100,7 @@ LS.Decor = (function () {
 
   function place(layer, culture, spec) {
     const el = document.createElement("div");
-    el.className = "motif motif-" + spec.motif + " tone-" + (spec.tone || "blue");
+    el.className = "motif motif-" + spec.motif + " tone-" + (spec.tone || "blue") + (spec.plain ? " plain" : "");
     const s = el.style;
     for (const k of ["top", "right", "bottom", "left", "width"]) if (spec[k] != null) s[k] = spec[k];
     const tf = [];
@@ -105,6 +110,18 @@ LS.Decor = (function () {
     if (spec.opacity) s.setProperty("--motif-o", spec.opacity);
     el.innerHTML = motifSvg(culture, spec.motif);
     layer.appendChild(el);
+  }
+
+  /* A pack may retint a theme's surfaces (Japanese turns Plain Light into
+     rice paper). Written as a stylesheet, not inline, so a colour scheme the
+     learner picks, which the kit writes inline, still wins. */
+  function surfaces(pack) {
+    let tag = document.getElementById("decor-surfaces");
+    if (!tag) { tag = document.createElement("style"); tag.id = "decor-surfaces"; document.head.appendChild(tag); }
+    const sf = (pack.culture && pack.culture.surfaces) || {};
+    tag.textContent = Object.entries(sf).map(([theme, vars]) =>
+      `html[data-theme="${theme}"][data-lang="${pack.id}"]{` +
+      Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(";") + "}").join("\n");
   }
 
   let desk = null;
@@ -128,6 +145,7 @@ LS.Decor = (function () {
       c._rule = `url("data:image/svg+xml,${encodeURIComponent(motifSvg(c, c.rule).replace("<svg ", '<svg preserveAspectRatio="none" fill="#000" '))}")`;
     }
     if (c._rule) root.style.setProperty("--brush-rule", c._rule);
+    surfaces(pack);
     const scene = c.scenes[route] || c.scenes.home;
     (scene.sheet || []).forEach(s => place(sheetLayer, c, s));
     (scene.desk || []).forEach(s => place(desk, c, s));

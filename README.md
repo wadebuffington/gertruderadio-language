@@ -54,7 +54,19 @@ The interface is the same for every language. The language you're studying is pi
 - **`pack.js`**: content (`items`, `lessons`) and the words the shell uses (`ui.types`, `ui.games`, for example "Kana Rain").
 - **`culture.js`**: the look. It sets two watermark colours (pale green and blue for Japanese), a seal, and **motifs** drawn with the engine's brush (`LS.Decor.brush`: a centre line plus a width profile, giving a tapered ink stroke). It also has a `scenes` table that says where each motif sits on each screen.
 
-The Japanese motifs are a tanchō crane, koi, an ensō, bamboo, seigaiha waves, and the pack's own kanji (水 山 日 木) re-inked as brush calligraphy. They are faint watermarks on the page and stronger on the desk around it, and they are hidden in the one-colour Terminal and MacWrite themes and in print.
+The Japanese look follows a reference painting (`packs/ja/art/source/painting.jpg`): ink and wash on rice paper, with a crane over old pine, Fuji, 平和 in bold brush, koi in a swirling stream, cherry, plum, bamboo and iris. `tools/cut-ja-art.py` lifts the paper out of the painting so each element becomes its own transparent piece in `packs/ja/art/`. The scenes then place those pieces:
+
+- **Desk:** they frame the page around it.
+- **Page:** they sit faint behind it, kept clear of the text.
+- **Plain Light theme:** it becomes rice paper, with indigo accents. A colour scheme the learner picks still takes priority.
+- **Dark themes:** the ink is inverted to pale wash.
+- **Terminal, MacWrite and print:** the pieces are hidden.
+
+To re-cut after changing a crop:
+
+```
+python3 tools/cut-ja-art.py packs/ja/art/source/painting.jpg
+```
 
 Adding a language means writing these two files, not engine code. Add the two `<script>` tags in `index.html`, and the language appears in the picker.
 

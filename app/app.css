@@ -217,9 +217,10 @@ html.reduce-motion *{animation:none!important;transition:none!important}
    app/decor.js from packs/<id>/culture.js, in the pack's pale green and
    blue, faint enough to read over.
    ====================================================================== */
-:root{--motif-green:#8CCB9B; --motif-blue:#86BCE3; --seal:#C8402F; --wm-sheet:.3; --wm-desk:.6}
-html[data-theme="dark"],html[data-theme="nightdesk"]{--wm-sheet:.09; --wm-desk:.16}
-html[data-theme="epiphany"]{--wm-sheet:.2; --wm-desk:.45}
+/* Each motif carries its own opacity; these scale a whole layer per theme. */
+:root{--motif-green:#7E9C6E; --motif-blue:#5B7FA6; --seal:#B8382B; --wm-sheet:1; --wm-desk:1}
+html[data-theme="dark"],html[data-theme="nightdesk"]{--wm-sheet:.45; --wm-desk:.4}
+html[data-theme="epiphany"]{--wm-sheet:.85; --wm-desk:.8}
 /* Terminal and MacWrite are one-colour by design; ink washes would fight them. */
 html[data-theme="hacker"] .decor-sheet,html[data-theme="hacker"] .decor-desk,
 html[data-theme="macwrite"] .decor-sheet,html[data-theme="macwrite"] .decor-desk{display:none}
@@ -228,7 +229,10 @@ html[data-theme="macwrite"] .decor-sheet,html[data-theme="macwrite"] .decor-desk
 .app-sheet{position:relative;z-index:1;overflow:hidden}
 .app-sheet > .decor-sheet{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--wm-sheet)}
 .motif{position:absolute;opacity:var(--motif-o,1);transform-origin:center}
-.motif svg{display:block;width:100%;height:auto;fill:currentColor}
+.motif svg,.motif img{display:block;width:100%;height:auto;fill:currentColor;user-select:none}
+/* On a dark page, ink is turned to pale wash: same strokes, light on dark.
+   The hue turn puts the koi back to blue and green after the inversion. */
+html[data-theme="dark"] .motif:not(.plain) img,html[data-theme="nightdesk"] .motif:not(.plain) img{filter:invert(1) hue-rotate(180deg)}
 .tone-blue{color:var(--motif-blue)}
 .tone-green{color:var(--motif-green)}
 @media print{.decor-desk,.decor-sheet{display:none!important}}
