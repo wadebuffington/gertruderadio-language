@@ -76,7 +76,7 @@ window.LS = window.LS || {};
   LS.UI = { announce, toast };
 
   /* ---------- speech ----------
-     The browser's Japanese voice for now. Every utterance is also shown as
+     The browser's voice for the pack's language, for now. Every utterance is also shown as
      a caption, so nothing depends on hearing it. */
   function voice() {
     const vs = speechSynthesis.getVoices();
@@ -87,14 +87,20 @@ window.LS = window.LS || {};
     toast("🔊 " + text, "caption");
     if (!("speechSynthesis" in window)) return;
     const v = voice();
-    if (!v) { announce("No Japanese voice is installed on this device."); return; }
+    if (!v) { announce(`No ${E.pack.name} voice is installed on this device.`); return; }
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.voice = v; u.lang = v.lang; u.rate = 0.8;
     speechSynthesis.speak(u);
   }
   if ("speechSynthesis" in window) speechSynthesis.getVoices();
-  const spoken = it => it.type === "letter" ? it.form : (it.readings ? it.readings.kun[0].replace(/\./g, "") : it.form);
+  const spoken = it => it.say || it.form;
+  const typeOf = it => (E.pack.ui.types || {})[it.type] || { name: it.type, plural: it.type, new: "New " + it.type };
+  const answerOf = it => it.meanings.length ? it.meanings[0] : it.reading;
+  // Target-language text gets lang="…" so screen readers voice it properly;
+  // a romanised reading is left in the page language.
+  const native = t => /[^\x00-\x7f]/.test(t) ? ja(t) : t;
+  const sep = () => E.pack.ui.listSep || ", ";
   const hearBtn = it => h("button", { type: "button", class: "btn", onclick: () => say(spoken(it)),
     "aria-label": "Hear " + it.form }, "🔊 Hear it");
 
@@ -146,9 +152,19 @@ window.LS = window.LS || {};
     else if (a === "games") b ? game(b) : games();
     else if (a === "settings") settings();
     else home();
+    LS.Decor.apply(E.pack, ["session", "learn", "games", "settings"].includes(a) ? a : "home");
     window.scrollTo(0, 0);
   }
   addEventListener("hashchange", route);
+
+  /* The language's name as a seal. Vertical scripts stack it, one
+     character per line, the way a hanko is carved. */
+  function seal() {
+    const c = (E.pack.culture && E.pack.culture.seal) || {};
+    const text = c.text || E.pack.nativeName;
+    return h("span", { class: "seal" + (c.vertical ? " vertical" : ""), "aria-hidden": "true", lang: E.pack.lang },
+      c.vertical ? [...text].map(ch => h("span", {}, ch)) : text);
+  }
 
   /* ---------- home ---------- */
   function home() {
@@ -167,7 +183,11 @@ window.LS = window.LS || {};
             : null);
 
     const main = h("section", { class: "home-main" },
-      h("h1", { class: "sr-only" }, "Today"),
+      h("header", { class: "lang-banner" },
+        seal(),
+        h("div", {},
+          h("h1", {}, E.pack.name, " ", h("span", { class: "native", lang: E.pack.lang }, E.pack.nativeName)),
+          h("p", { class: "dim" }, E.pack.tagline))),
       h("div", { class: "home-top" },
         ring(s.dayXp, g.xp),
         h("div", { class: "companion", role: "img", "aria-label": `Your companion is ${comp.name}. ${comp.learned} items learned.` },
@@ -209,17 +229,15 @@ window.LS = window.LS || {};
         ...Object.keys(counts).map(k => h("tr", {}, h("th", { scope: "row" }, `${stateIcon[k]} ${stateLabel[k]}`), h("td", {}, String(counts[k])))),
         h("tr", {}, h("th", { scope: "row" }, "Reviews today"), h("td", {}, String(todayReviews))),
         h("tr", {}, h("th", { scope: "row" }, "Best streak"), h("td", {}, `${st.stats.bestStreak} day${st.stats.bestStreak === 1 ? "" : "s"}`)),
-        h("tr", {}, h("th", { scope: "row" }, "Kana Rain best"), h("td", {}, String(st.bests.rain || "—"))),
-        h("tr", {}, h("th", { scope: "row" }, "Match Pairs best"), h("td", {}, String(st.bests.match || "—")))));
+        ...Object.entries(E.pack.ui.games).map(([id, g]) =>
+          h("tr", {}, h("th", { scope: "row" }, `${g.name} best`), h("td", {}, String(st.bests[id] || "—"))))));
   }
 
   function gameCards() {
-    const card = (id, name, desc, icon) => h("a", { class: "game-card", href: "#/games/" + id },
-      h("span", { class: "game-icon", "aria-hidden": "true", lang: "ja" }, icon),
-      h("span", {}, h("strong", {}, name), h("span", { class: "dim" }, desc)));
-    return h("div", { class: "game-cards" },
-      card("rain", "Kana Rain", "Type or tap the reading before it lands.", "あ"),
-      card("match", "Match Pairs", "Flip and match characters to readings.", "🂠"));
+    return h("div", { class: "game-cards" }, Object.entries(E.pack.ui.games).map(([id, g]) =>
+      h("a", { class: "game-card", href: "#/games/" + id },
+        h("span", { class: "game-icon", "aria-hidden": "true", lang: E.pack.lang }, g.icon),
+        h("span", {}, h("strong", {}, g.name), h("span", { class: "dim" }, g.blurb)))));
   }
 
   /* ---------- session: review queue → lessons → done ---------- */
@@ -290,13 +308,13 @@ window.LS = window.LS || {};
   function lessonCard(stage, it, done) {
     const watchBox = h("div", { class: "canvas-box" });
     const card = h("article", { class: "card lesson", "aria-labelledby": "lc-form" },
-      h("p", { class: "eyebrow" }, it.type === "kanji" ? "New kanji" : "New character"),
+      h("p", { class: "eyebrow" }, typeOf(it).new),
       h("div", { class: "lesson-grid" },
         h("div", {},
           h("p", { class: "big-char", id: "lc-form" }, ja(it.form)),
           h("p", { class: "reading" }, readingText(it)),
           it.meanings.length ? h("p", { class: "meaning" }, it.meanings.join(", ")) : null,
-          it.readings ? h("p", { class: "dim" }, "On: ", ja(it.readings.on.join("、")), " · Kun: ", ja(it.readings.kun.join("、"))) : null,
+          allReadings(it),
           h("p", { class: "mnemonic" }, it.mnemonic),
           h("div", { class: "row" }, hearBtn(it))),
         h("div", {}, watchBox,
@@ -313,8 +331,14 @@ window.LS = window.LS || {};
     return w;
   }
   function readingText(it) {
-    if (it.type === "letter") return it.romaji;
-    return h("span", {}, ja(it.readings.kun[0].replace(/\./g, "")), " / ", ja(it.readings.on[0]));
+    const parts = [it.reading];
+    if (it.readings && it.readings[1]) parts.push(it.readings[1].values[0]);
+    return h("span", {}, parts.flatMap((p, i) => i ? [" / ", native(p)] : [native(p)]));
+  }
+  function allReadings(it) {
+    if (!it.readings) return null;
+    return h("p", { class: "dim" }, it.readings.flatMap((r, i) =>
+      [i ? " · " : "", r.label + ": ", native(r.values.join(sep()))]));
   }
 
   /* Recognize: see the character, recall it, rate yourself. */
@@ -383,8 +407,9 @@ window.LS = window.LS || {};
     const hintBtn = h("button", { type: "button", class: "btn", onclick: () => pad && pad.hint() }, "Hint ", h("kbd", {}, "H"));
     const card = h("article", { class: "card write" },
       h("p", { class: "eyebrow" }, "Write it · " + mode),
-      h("p", { class: "prompt" }, it.type === "letter" ? h("span", {}, "Write ", h("strong", {}, it.romaji)) :
-        h("span", {}, "Write the kanji for ", h("strong", {}, it.meanings[0]), " (", ja(it.readings.kun[0].replace(/\./g, "")), ")")),
+      h("p", { class: "prompt" }, it.meanings.length
+        ? h("span", {}, `Write the ${typeOf(it).name} for `, h("strong", {}, it.meanings[0]), " (", native(it.reading), ")")
+        : h("span", {}, "Write ", h("strong", {}, it.reading))),
       h("p", { class: "dim mode-text" }, modeText[mode]),
       box, status,
       h("div", { class: "row center tools" }, hintBtn, altBtn, hearBtn(it)));
@@ -433,8 +458,8 @@ window.LS = window.LS || {};
         h("ul", { class: "tiles" }, l.items.map(id => {
           const it = E.item(id), s = E.itemState(id);
           return h("li", {}, h("a", { href: "#/learn/" + encodeURIComponent(id), class: "tile s-" + s,
-            "aria-label": `${it.form}, ${it.type === "letter" ? it.romaji : it.meanings[0]}, ${stateLabel[s]}` },
-            ja(it.form, "tile-form"), h("span", { class: "tile-sub" }, it.type === "letter" ? it.romaji : it.meanings[0]),
+            "aria-label": `${it.form}, ${answerOf(it)}, ${stateLabel[s]}` },
+            ja(it.form, "tile-form"), h("span", { class: "tile-sub" }, answerOf(it)),
             h("span", { class: "tile-state", "aria-hidden": "true" }, stateIcon[s])));
         })));
     }
@@ -520,10 +545,10 @@ window.LS = window.LS || {};
       h("fieldset", {}, h("legend", {}, "Comfort"),
         check("largeType", "Large type", "Characters up to 200px."),
         check("reduceMotion", "Reduce motion", "No shake or sparkle. Your system setting is honoured too."),
-        check("sound", "Sound and voice", "Effects and the Japanese voice. Everything spoken is also captioned."),
+        check("sound", "Sound and voice", `Effects and the ${E.pack.name} voice. Everything spoken is also captioned.`),
         check("drawAlternative", "Choose strokes instead of drawing", "Write cards become pick-the-next-stroke. Graded the same way.")),
       h("fieldset", {}, h("legend", {}, "Lessons"),
-        check("unlockAll", "Unlock every lesson", "Skip ahead — handy for trying the kanji in this preview.")),
+        check("unlockAll", "Unlock every lesson", "Skip ahead to any lesson — handy for trying later lessons in this preview.")),
       h("fieldset", {}, h("legend", {}, "Your progress"),
         h("p", { class: "dim" }, "Saved in this browser only. Export a file to back it up or move it to another device."),
         h("div", { class: "row" },
@@ -547,9 +572,32 @@ window.LS = window.LS || {};
   }
 
   /* ---------- boot ---------- */
+  /* ---------- language ----------
+     Every pack runs in the same shell. The choice is remembered per browser,
+     and each language keeps its own progress. */
+  const PACKS = window.LANG_PACKS || {};
+  function chosenPack() {
+    let id = null;
+    try { id = localStorage.getItem("ls.lang"); } catch (e) { /* none */ }
+    return PACKS[id] || PACKS[Object.keys(PACKS)[0]];
+  }
+  function languagePicker(pack) {
+    const sel = document.getElementById("lang-pick");
+    sel.replaceChildren(...Object.values(PACKS).map(p =>
+      h("option", { value: p.id, selected: p.id === pack.id }, `${p.name} · ${p.nativeName}`)));
+    sel.addEventListener("change", async () => {
+      try { localStorage.setItem("ls.lang", sel.value); } catch (e) { /* none */ }
+      await LS.Store.flush();
+      location.hash = "#/";
+      location.reload();
+    });
+  }
+
   (async function boot() {
-    const pack = window.LANG_PACKS.ja;
-    E.init(pack, await LS.Store.load());
+    const pack = chosenPack();
+    E.init(pack, await LS.Store.load(pack.id));
+    document.title = `${pack.name} · Language Studio — Gertrude Radio`;
+    languagePicker(pack);
     applySettings();
     E.onChange(() => applySettings());
     // A new day can start while the tab sits open.

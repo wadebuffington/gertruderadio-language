@@ -7,6 +7,36 @@
  "lang": "ja",
  "dir": "ltr",
  "speechLang": "ja-JP",
+ "tagline": "Hiragana and your first kanji",
+ "ui": {
+  "listSep": "、",
+  "types": {
+   "letter": {
+    "name": "character",
+    "plural": "characters",
+    "new": "New character"
+   },
+   "kanji": {
+    "name": "kanji",
+    "plural": "kanji",
+    "new": "New kanji"
+   }
+  },
+  "games": {
+   "rain": {
+    "name": "Kana Rain",
+    "blurb": "Type or tap the reading before it lands.",
+    "icon": "あ",
+    "itemType": "letter",
+    "unit": "kana"
+   },
+   "match": {
+    "name": "Match Pairs",
+    "blurb": "Flip and match characters to readings.",
+    "icon": "合"
+   }
+  }
+ },
  "canvas": {
   "grid": "square-cross",
   "viewBox": 109
@@ -164,7 +194,7 @@
    "type": "letter",
    "form": "あ",
    "reading": "a",
-   "romaji": "a",
+   "say": "あ",
    "meanings": [],
    "mnemonic": "An apple with a stalk — say \"ah\" as you bite it.",
    "components": [],
@@ -184,7 +214,7 @@
    "type": "letter",
    "form": "い",
    "reading": "i",
-   "romaji": "i",
+   "say": "い",
    "meanings": [],
    "mnemonic": "Two eels side by side: \"ee\"-ls.",
    "components": [],
@@ -203,7 +233,7 @@
    "type": "letter",
    "form": "う",
    "reading": "u",
-   "romaji": "u",
+   "say": "う",
    "meanings": [],
    "mnemonic": "A face with a little hat, going \"oo\".",
    "components": [],
@@ -222,7 +252,7 @@
    "type": "letter",
    "form": "え",
    "reading": "e",
-   "romaji": "e",
+   "say": "え",
    "meanings": [],
    "mnemonic": "An exotic bird with a crest: \"eh?\"",
    "components": [],
@@ -241,7 +271,7 @@
    "type": "letter",
    "form": "お",
    "reading": "o",
-   "romaji": "o",
+   "say": "お",
    "meanings": [],
    "mnemonic": "A golfer swings and the ball flies off: \"oh!\"",
    "components": [],
@@ -261,7 +291,7 @@
    "type": "letter",
    "form": "か",
    "reading": "ka",
-   "romaji": "ka",
+   "say": "か",
    "meanings": [],
    "mnemonic": "A cutting blade with a spark — \"ka\"-ching.",
    "components": [],
@@ -281,7 +311,7 @@
    "type": "letter",
    "form": "き",
    "reading": "ki",
-   "romaji": "ki",
+   "say": "き",
    "meanings": [],
    "mnemonic": "A key with two teeth.",
    "components": [],
@@ -302,7 +332,7 @@
    "type": "letter",
    "form": "く",
    "reading": "ku",
-   "romaji": "ku",
+   "say": "く",
    "meanings": [],
    "mnemonic": "A cuckoo's open beak: \"ku\".",
    "components": [],
@@ -320,7 +350,7 @@
    "type": "letter",
    "form": "け",
    "reading": "ke",
-   "romaji": "ke",
+   "say": "け",
    "meanings": [],
    "mnemonic": "A keg on a stand, with a tap.",
    "components": [],
@@ -340,7 +370,7 @@
    "type": "letter",
    "form": "こ",
    "reading": "ko",
-   "romaji": "ko",
+   "say": "こ",
    "meanings": [],
    "mnemonic": "Two worms co-habiting: \"ko\".",
    "components": [],
@@ -359,7 +389,7 @@
    "type": "letter",
    "form": "さ",
    "reading": "sa",
-   "romaji": "sa",
+   "say": "さ",
    "meanings": [],
    "mnemonic": "A sign with a curvy post — say \"sa\".",
    "components": [],
@@ -379,7 +409,7 @@
    "type": "letter",
    "form": "し",
    "reading": "shi",
-   "romaji": "shi",
+   "say": "し",
    "meanings": [],
    "mnemonic": "A fish hook — \"she\" caught a fish.",
    "components": [],
@@ -397,7 +427,7 @@
    "type": "letter",
    "form": "す",
    "reading": "su",
-   "romaji": "su",
+   "say": "す",
    "meanings": [],
    "mnemonic": "A swing with a loop in the rope: \"su\".",
    "components": [],
@@ -416,7 +446,7 @@
    "type": "letter",
    "form": "せ",
    "reading": "se",
-   "romaji": "se",
+   "say": "せ",
    "meanings": [],
    "mnemonic": "A mouth with a long tooth saying \"say\".",
    "components": [],
@@ -436,7 +466,7 @@
    "type": "letter",
    "form": "そ",
    "reading": "so",
-   "romaji": "so",
+   "say": "そ",
    "meanings": [],
    "mnemonic": "A zig-zag seam being sewn: \"so\".",
    "components": [],
@@ -454,7 +484,7 @@
    "type": "letter",
    "form": "た",
    "reading": "ta",
-   "romaji": "ta",
+   "say": "た",
    "meanings": [],
    "mnemonic": "The letters t and a, nearly: \"ta\".",
    "components": [],
@@ -475,7 +505,7 @@
    "type": "letter",
    "form": "ち",
    "reading": "chi",
-   "romaji": "chi",
+   "say": "ち",
    "meanings": [],
    "mnemonic": "A cheerleader leaning back: \"chi\".",
    "components": [],
@@ -494,7 +524,7 @@
    "type": "letter",
    "form": "つ",
    "reading": "tsu",
-   "romaji": "tsu",
+   "say": "つ",
    "meanings": [],
    "mnemonic": "A tsunami wave curling over.",
    "components": [],
@@ -512,7 +542,7 @@
    "type": "letter",
    "form": "て",
    "reading": "te",
-   "romaji": "te",
+   "say": "て",
    "meanings": [],
    "mnemonic": "A tail curling down: \"te\".",
    "components": [],
@@ -530,7 +560,7 @@
    "type": "letter",
    "form": "と",
    "reading": "to",
-   "romaji": "to",
+   "say": "と",
    "meanings": [],
    "mnemonic": "A toe with a splinter in it.",
    "components": [],
@@ -549,7 +579,7 @@
    "type": "letter",
    "form": "な",
    "reading": "na",
-   "romaji": "na",
+   "say": "な",
    "meanings": [],
    "mnemonic": "A nun kneeling beside a cross: \"na\".",
    "components": [],
@@ -570,7 +600,7 @@
    "type": "letter",
    "form": "に",
    "reading": "ni",
-   "romaji": "ni",
+   "say": "に",
    "meanings": [],
    "mnemonic": "A knee next to a table: \"ni\".",
    "components": [],
@@ -590,7 +620,7 @@
    "type": "letter",
    "form": "ぬ",
    "reading": "nu",
-   "romaji": "nu",
+   "say": "ぬ",
    "meanings": [],
    "mnemonic": "Noodles on a fork — \"nu\"-dles.",
    "components": [],
@@ -609,7 +639,7 @@
    "type": "letter",
    "form": "ね",
    "reading": "ne",
-   "romaji": "ne",
+   "say": "ね",
    "meanings": [],
    "mnemonic": "A cat curled up, tail looped: \"neko\".",
    "components": [],
@@ -628,7 +658,7 @@
    "type": "letter",
    "form": "の",
    "reading": "no",
-   "romaji": "no",
+   "say": "の",
    "meanings": [],
    "mnemonic": "A no-entry sign: \"no\".",
    "components": [],
@@ -646,7 +676,7 @@
    "type": "letter",
    "form": "は",
    "reading": "ha",
-   "romaji": "ha",
+   "say": "は",
    "meanings": [],
    "mnemonic": "A man laughing with his arms out: \"ha!\"",
    "components": [],
@@ -666,7 +696,7 @@
    "type": "letter",
    "form": "ひ",
    "reading": "hi",
-   "romaji": "hi",
+   "say": "ひ",
    "meanings": [],
    "mnemonic": "A big grin: \"hee hee\".",
    "components": [],
@@ -684,7 +714,7 @@
    "type": "letter",
    "form": "ふ",
    "reading": "fu",
-   "romaji": "fu",
+   "say": "ふ",
    "meanings": [],
    "mnemonic": "Mount Fuji with clouds around it.",
    "components": [],
@@ -705,7 +735,7 @@
    "type": "letter",
    "form": "へ",
    "reading": "he",
-   "romaji": "he",
+   "say": "へ",
    "meanings": [],
    "mnemonic": "A gentle hill: \"heh\", that's easy.",
    "components": [],
@@ -723,7 +753,7 @@
    "type": "letter",
    "form": "ほ",
    "reading": "ho",
-   "romaji": "ho",
+   "say": "ほ",
    "meanings": [],
    "mnemonic": "A ho-ho-holly bush in a pot.",
    "components": [],
@@ -744,7 +774,7 @@
    "type": "letter",
    "form": "ま",
    "reading": "ma",
-   "romaji": "ma",
+   "say": "ま",
    "meanings": [],
    "mnemonic": "A mama with a ribbon in her hair.",
    "components": [],
@@ -764,7 +794,7 @@
    "type": "letter",
    "form": "み",
    "reading": "mi",
-   "romaji": "mi",
+   "say": "み",
    "meanings": [],
    "mnemonic": "The number 21 — \"me\" at twenty-one.",
    "components": [],
@@ -783,7 +813,7 @@
    "type": "letter",
    "form": "む",
    "reading": "mu",
-   "romaji": "mu",
+   "say": "む",
    "meanings": [],
    "mnemonic": "A cow saying \"moo\" with its tail up.",
    "components": [],
@@ -803,7 +833,7 @@
    "type": "letter",
    "form": "め",
    "reading": "me",
-   "romaji": "me",
+   "say": "め",
    "meanings": [],
    "mnemonic": "An eye (\"me\" in Japanese) with a lash.",
    "components": [],
@@ -822,7 +852,7 @@
    "type": "letter",
    "form": "も",
    "reading": "mo",
-   "romaji": "mo",
+   "say": "も",
    "meanings": [],
    "mnemonic": "A fish hook with more worms on it: \"mo\".",
    "components": [],
@@ -842,7 +872,7 @@
    "type": "letter",
    "form": "や",
    "reading": "ya",
-   "romaji": "ya",
+   "say": "や",
    "meanings": [],
    "mnemonic": "A yak with horns: \"ya\".",
    "components": [],
@@ -862,7 +892,7 @@
    "type": "letter",
    "form": "ゆ",
    "reading": "yu",
-   "romaji": "yu",
+   "say": "ゆ",
    "meanings": [],
    "mnemonic": "A unique fish swimming: \"yu\".",
    "components": [],
@@ -881,7 +911,7 @@
    "type": "letter",
    "form": "よ",
    "reading": "yo",
-   "romaji": "yo",
+   "say": "よ",
    "meanings": [],
    "mnemonic": "A yo-yo hanging from a string.",
    "components": [],
@@ -900,7 +930,7 @@
    "type": "letter",
    "form": "ら",
    "reading": "ra",
-   "romaji": "ra",
+   "say": "ら",
    "meanings": [],
    "mnemonic": "A rabbit with one tall ear: \"ra\".",
    "components": [],
@@ -919,7 +949,7 @@
    "type": "letter",
    "form": "り",
    "reading": "ri",
-   "romaji": "ri",
+   "say": "り",
    "meanings": [],
    "mnemonic": "Two reeds by a river: \"ri\".",
    "components": [],
@@ -938,7 +968,7 @@
    "type": "letter",
    "form": "る",
    "reading": "ru",
-   "romaji": "ru",
+   "say": "る",
    "meanings": [],
    "mnemonic": "A route that loops back: \"ru\".",
    "components": [],
@@ -956,7 +986,7 @@
    "type": "letter",
    "form": "れ",
    "reading": "re",
-   "romaji": "re",
+   "say": "れ",
    "meanings": [],
    "mnemonic": "A man kneeling to retch: \"re\".",
    "components": [],
@@ -975,7 +1005,7 @@
    "type": "letter",
    "form": "ろ",
    "reading": "ro",
-   "romaji": "ro",
+   "say": "ろ",
    "meanings": [],
    "mnemonic": "A road with no loop at the end: \"ro\".",
    "components": [],
@@ -993,7 +1023,7 @@
    "type": "letter",
    "form": "わ",
    "reading": "wa",
-   "romaji": "wa",
+   "say": "わ",
    "meanings": [],
    "mnemonic": "A wasp with a long stinger: \"wa\".",
    "components": [],
@@ -1012,7 +1042,7 @@
    "type": "letter",
    "form": "を",
    "reading": "wo",
-   "romaji": "wo",
+   "say": "を",
    "meanings": [],
    "mnemonic": "A man on a whoa-ing horse: \"wo\".",
    "components": [],
@@ -1032,7 +1062,7 @@
    "type": "letter",
    "form": "ん",
    "reading": "n",
-   "romaji": "n",
+   "say": "ん",
    "meanings": [],
    "mnemonic": "A lower-case n with a tail: \"n\".",
    "components": [],
@@ -1050,16 +1080,23 @@
    "type": "kanji",
    "form": "日",
    "reading": "ひ",
-   "readings": {
-    "on": [
-     "ニチ",
-     "ジツ"
-    ],
-    "kun": [
-     "ひ",
-     "か"
-    ]
-   },
+   "say": "ひ",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "ひ",
+      "か"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "ニチ",
+      "ジツ"
+     ]
+    }
+   ],
    "meanings": [
     "sun",
     "day"
@@ -1083,15 +1120,22 @@
    "type": "kanji",
    "form": "月",
    "reading": "つき",
-   "readings": {
-    "on": [
-     "ゲツ",
-     "ガツ"
-    ],
-    "kun": [
-     "つき"
-    ]
-   },
+   "say": "つき",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "つき"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "ゲツ",
+      "ガツ"
+     ]
+    }
+   ],
    "meanings": [
     "moon",
     "month"
@@ -1115,14 +1159,21 @@
    "type": "kanji",
    "form": "火",
    "reading": "ひ",
-   "readings": {
-    "on": [
-     "カ"
-    ],
-    "kun": [
-     "ひ"
-    ]
-   },
+   "say": "ひ",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "ひ"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "カ"
+     ]
+    }
+   ],
    "meanings": [
     "fire"
    ],
@@ -1145,14 +1196,21 @@
    "type": "kanji",
    "form": "水",
    "reading": "みず",
-   "readings": {
-    "on": [
-     "スイ"
-    ],
-    "kun": [
-     "みず"
-    ]
-   },
+   "say": "みず",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "みず"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "スイ"
+     ]
+    }
+   ],
    "meanings": [
     "water"
    ],
@@ -1175,15 +1233,22 @@
    "type": "kanji",
    "form": "木",
    "reading": "き",
-   "readings": {
-    "on": [
-     "モク",
-     "ボク"
-    ],
-    "kun": [
-     "き"
-    ]
-   },
+   "say": "き",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "き"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "モク",
+      "ボク"
+     ]
+    }
+   ],
    "meanings": [
     "tree",
     "wood"
@@ -1207,14 +1272,21 @@
    "type": "kanji",
    "form": "山",
    "reading": "やま",
-   "readings": {
-    "on": [
-     "サン"
-    ],
-    "kun": [
-     "やま"
-    ]
-   },
+   "say": "やま",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "やま"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "サン"
+     ]
+    }
+   ],
    "meanings": [
     "mountain"
    ],
@@ -1236,14 +1308,21 @@
    "type": "kanji",
    "form": "川",
    "reading": "かわ",
-   "readings": {
-    "on": [
-     "セン"
-    ],
-    "kun": [
-     "かわ"
-    ]
-   },
+   "say": "かわ",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "かわ"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "セン"
+     ]
+    }
+   ],
    "meanings": [
     "river"
    ],
@@ -1265,15 +1344,22 @@
    "type": "kanji",
    "form": "人",
    "reading": "ひと",
-   "readings": {
-    "on": [
-     "ジン",
-     "ニン"
-    ],
-    "kun": [
-     "ひと"
-    ]
-   },
+   "say": "ひと",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "ひと"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "ジン",
+      "ニン"
+     ]
+    }
+   ],
    "meanings": [
     "person"
    ],
@@ -1294,15 +1380,22 @@
    "type": "kanji",
    "form": "口",
    "reading": "くち",
-   "readings": {
-    "on": [
-     "コウ",
-     "ク"
-    ],
-    "kun": [
-     "くち"
-    ]
-   },
+   "say": "くち",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "くち"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "コウ",
+      "ク"
+     ]
+    }
+   ],
    "meanings": [
     "mouth"
    ],
@@ -1324,14 +1417,21 @@
    "type": "kanji",
    "form": "田",
    "reading": "た",
-   "readings": {
-    "on": [
-     "デン"
-    ],
-    "kun": [
-     "た"
-    ]
-   },
+   "say": "た",
+   "readings": [
+    {
+     "label": "Kun",
+     "values": [
+      "た"
+     ]
+    },
+    {
+     "label": "On",
+     "values": [
+      "デン"
+     ]
+    }
+   ],
    "meanings": [
     "rice field"
    ],

@@ -209,3 +209,55 @@ html.reduce-motion *{animation:none!important;transition:none!important}
   .rain-taps .btn{font-size:16px}
   .card{padding:1em .8em .6em}
 }
+
+/* ======================================================================
+   LANGUAGE AND CULTURE
+   The shell is the same for every language. What changes is the pack's
+   name in the bar and the banner, and its watermarks: motifs drawn by
+   app/decor.js from packs/<id>/culture.js, in the pack's pale green and
+   blue, faint enough to read over.
+   ====================================================================== */
+:root{--motif-green:#8CCB9B; --motif-blue:#86BCE3; --seal:#C8402F; --wm-sheet:.3; --wm-desk:.6}
+html[data-theme="dark"],html[data-theme="nightdesk"]{--wm-sheet:.09; --wm-desk:.16}
+html[data-theme="epiphany"]{--wm-sheet:.2; --wm-desk:.45}
+/* Terminal and MacWrite are one-colour by design; ink washes would fight them. */
+html[data-theme="hacker"] .decor-sheet,html[data-theme="hacker"] .decor-desk,
+html[data-theme="macwrite"] .decor-sheet,html[data-theme="macwrite"] .decor-desk{display:none}
+
+.decor-desk{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--wm-desk)}
+.app-sheet{position:relative;z-index:1;overflow:hidden}
+.app-sheet > .decor-sheet{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--wm-sheet)}
+.motif{position:absolute;opacity:var(--motif-o,1);transform-origin:center}
+.motif svg{display:block;width:100%;height:auto;fill:currentColor}
+.tone-blue{color:var(--motif-blue)}
+.tone-green{color:var(--motif-green)}
+@media print{.decor-desk,.decor-sheet{display:none!important}}
+
+/* Surfaces let the wash show through a little, like rice paper. */
+.card{background:color-mix(in srgb, var(--card-bg) 82%, transparent)}
+.game-card,.tile{background:color-mix(in srgb, var(--card-bg) 86%, transparent)}
+
+/* Section headings carry one brush stroke instead of a rule. */
+.kit-surface h2::after{content:"";display:block;width:110px;height:7px;margin-top:5px;
+  background:var(--motif-blue);
+  -webkit-mask:var(--brush-rule) center/100% 100% no-repeat;mask:var(--brush-rule) center/100% 100% no-repeat}
+html[data-theme="dark"] .kit-surface h2::after,html[data-theme="nightdesk"] .kit-surface h2::after{opacity:.7}
+html[data-theme="hacker"] .kit-surface h2::after,html[data-theme="macwrite"] .kit-surface h2::after{background:currentColor}
+
+/* The language you are studying: a name in the bar, a seal on the page. */
+.lang-pick{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.lang-banner{display:flex;align-items:center;gap:14px;margin:0 0 1.2em}
+.lang-banner h1{margin:0;font-size:24px;line-height:1.2}
+.lang-banner h1 .native{font-family:var(--ja-font);font-weight:400;color:var(--muted);margin-left:.2em}
+.lang-banner p{margin:.1em 0 0}
+.seal{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:6px 8px;
+  font-family:var(--ja-font);font-size:15px;font-weight:700;line-height:1.05;
+  color:#fff;background:var(--seal);border-radius:5px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);transform:rotate(-3deg)}
+.seal.vertical{flex-direction:column;padding:6px 7px}
+html[data-theme="macwrite"] .seal{background:#000;transform:none}
+html[data-theme="hacker"] .seal{background:transparent;color:var(--sheet-fg);box-shadow:inset 0 0 0 2px currentColor;transform:none}
+
+@media (max-width:760px){
+  .decor-desk{display:none}
+  .lang-pick label{display:none}
+}

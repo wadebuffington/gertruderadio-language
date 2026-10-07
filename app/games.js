@@ -17,15 +17,18 @@ LS.Games = (function () {
     for (const c of kids) if (c != null) e.append(c);
     return e;
   };
-  const answerOf = it => it.type === "letter" ? it.romaji : it.meanings[0];
+  // Items with a meaning are answered by meaning; letters by their sound.
+  const answerOf = it => it.meanings.length ? it.meanings[0] : it.reading;
+  const cfg = id => E().pack.ui.games[id];
 
-  /* ---------- Kana Rain ----------
+  /* ---------- Rain (Kana Rain in Japanese) ----------
      Characters fall; type or tap the reading before they land. Speeds up
      with each streak. Timer can be slowed or turned off in Settings. */
   function rain(root, { onExit }) {
     const st = E().state.settings, scale = st.timerScale;   // 0 = untimed
-    const pool = E().gamePool(it => it.type === "letter", 40);
-    if (pool.length < 3) return notEnough(root, onExit, "Kana Rain needs three learned kana. Do a lesson first.");
+    const g = cfg("rain");
+    const pool = E().gamePool(it => !g.itemType || it.type === g.itemType, 40);
+    if (pool.length < 3) return notEnough(root, onExit, `${g.name} needs three learned ${g.unit}. Do a lesson first.`);
 
     const ROUND_MS = 90000 * (scale || 1), UNTIMED_ANSWERS = 20;
     let drops = [], score = 0, streak = 0, answered = 0, hits = 0;
@@ -39,7 +42,7 @@ LS.Games = (function () {
     const pauseBtn = h("button", { type: "button", class: "btn", onclick: () => togglePause() }, "Pause");
     const now = h("p", { class: "sr-only", "aria-live": "polite" });
     root.replaceChildren(
-      h("div", { class: "game-head" }, h("h2", {}, "Kana Rain"), pauseBtn,
+      h("div", { class: "game-head" }, h("h2", {}, g.name), pauseBtn,
         h("button", { type: "button", class: "btn", onclick: () => finish(true) }, "End round")),
       hud, area, input, taps, now);
 
@@ -145,7 +148,7 @@ LS.Games = (function () {
       if (ended) return;
       ended = true; running = false;
       cancelAnimationFrame(raf);
-      results(root, "Kana Rain", score, hits, answered, E().setBest("rain", score), onExit, () => rain(root, { onExit }));
+      results(root, "rain", score, hits, answered, E().setBest("rain", score), onExit, () => rain(root, { onExit }));
     }
 
     running = true; after(); input.focus();
@@ -157,8 +160,9 @@ LS.Games = (function () {
      A memory grid of character ↔ reading (or meaning). No time pressure:
      the clock only counts up, for a personal best. */
   function match(root, { onExit }) {
+    const g = cfg("match");
     const pool = E().gamePool(() => true, 6);
-    if (pool.length < 3) return notEnough(root, onExit, "Match Pairs needs three learned items. Do a lesson first.");
+    if (pool.length < 3) return notEnough(root, onExit, `${g.name} needs three learned items. Do a lesson first.`);
     const tiles = E().shuffle(pool.flatMap(id => [{ id, side: "form" }, { id, side: "answer" }]));
     const misses = {}, start = performance.now();
     let open = [], matched = 0, moves = 0, done = false, timer = 0;
@@ -167,7 +171,7 @@ LS.Games = (function () {
     const hud = h("div", { class: "game-hud" });
     const grid = h("div", { class: "match-grid", role: "group", "aria-label": "Cards" });
     root.replaceChildren(
-      h("div", { class: "game-head" }, h("h2", {}, "Match Pairs"),
+      h("div", { class: "game-head" }, h("h2", {}, g.name),
         h("button", { type: "button", class: "btn", onclick: () => { stop(); onExit(); } }, "Leave")),
       hud, grid, live);
 
@@ -220,7 +224,7 @@ LS.Games = (function () {
         E().gradeAuto(E().cardId(id, "recognize"), ok, { src: "match" });
       }
       const score = Math.max(10, 300 - secs() * 2 - (moves - pool.length) * 10);
-      setTimeout(() => results(root, "Match Pairs", score, right, pool.length,
+      setTimeout(() => results(root, "match", score, right, pool.length,
         E().setBest("match", score), onExit, () => match(root, { onExit })), 500);
     }
     timer = setInterval(drawHud, 1000); drawHud();
@@ -235,13 +239,13 @@ LS.Games = (function () {
     return { destroy() {} };
   }
 
-  function results(root, name, score, right, total, best, onExit, again) {
+  function results(root, id, score, right, total, best, onExit, again) {
     LS.FX.sfx(best ? "best" : "done");
     root.replaceChildren(
       h("div", { class: "results", role: "status" },
-        h("h2", {}, name + " — done"),
+        h("h2", {}, cfg(id).name + " — done"),
         h("p", { class: "big-num" }, String(score)),
-        h("p", {}, best ? "A new personal best." : `Personal best: ${E().state.bests[name === "Kana Rain" ? "rain" : "match"]}`),
+        h("p", {}, best ? "A new personal best." : `Personal best: ${E().state.bests[id]}`),
         h("p", { class: "dim" }, `${right} of ${total} right. Every answer went to your review schedule.`),
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn primary", onclick: again }, "Play again"),

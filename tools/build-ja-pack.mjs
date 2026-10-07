@@ -95,7 +95,7 @@ const items = [];
 for (const [row, kana] of ROWS) {
   for (const [form, romaji, mnemonic] of kana) {
     items.push({
-      id: "ja:h:" + form, type: "letter", form, reading: romaji, romaji,
+      id: "ja:h:" + form, type: "letter", form, reading: romaji, say: form,
       meanings: [], mnemonic, components: [],
       tags: ["hiragana", "row-" + row], lesson: "hira-" + row,
       strokes: await strokes(form),
@@ -105,7 +105,9 @@ for (const [row, kana] of ROWS) {
 for (const [form, meanings, on, kun, mnemonic] of KANJI) {
   items.push({
     id: "ja:k:" + form, type: "kanji", form,
-    reading: kun[0], readings: { on, kun }, meanings, mnemonic, components: [],
+    reading: kun[0].replace(/\./g, ""), say: kun[0].replace(/\./g, ""),
+    readings: [{ label: "Kun", values: kun }, { label: "On", values: on }],
+    meanings, mnemonic, components: [],
     tags: ["kanji", "N5"], lesson: "kanji-1",
     strokes: await strokes(form),
   });
@@ -123,6 +125,19 @@ const lessons = [
 const pack = {
   id: "ja", name: "Japanese", nativeName: "日本語",
   lang: "ja", dir: "ltr", speechLang: "ja-JP",
+  tagline: "Hiragana and your first kanji",
+  // Words the shell uses for this language. The engine has none of its own.
+  ui: {
+    listSep: "、",
+    types: {
+      letter: { name: "character", plural: "characters", new: "New character" },
+      kanji: { name: "kanji", plural: "kanji", new: "New kanji" },
+    },
+    games: {
+      rain: { name: "Kana Rain", blurb: "Type or tap the reading before it lands.", icon: "あ", itemType: "letter", unit: "kana" },
+      match: { name: "Match Pairs", blurb: "Flip and match characters to readings.", icon: "合" },
+    },
+  },
   canvas: { grid: "square-cross", viewBox: 109 },
   credits: [
     { what: "Stroke data", who: "KanjiVG, © Ulrich Apel",

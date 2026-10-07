@@ -1,4 +1,4 @@
-/* Storage: one progress object in IndexedDB, with export and import of the
+/* Storage: one progress object per language pack in IndexedDB, with export and import of the
    same object as a file. Nothing depends on an account or a server.
    Falls back to localStorage when IndexedDB is unavailable (some private
    windows), and to memory when neither is. */
@@ -6,7 +6,8 @@
 window.LS = window.LS || {};
 
 LS.Store = (function () {
-  const DB = "language-studio", OS = "progress", KEY = "main";
+  const DB = "language-studio", OS = "progress";
+  const keyFor = packId => "progress:" + packId;
   let dbp = null;
 
   function open() {
@@ -21,18 +22,25 @@ LS.Store = (function () {
     return dbp;
   }
 
-  async function load() {
+  async function get(key) {
     try {
       const db = await open();
       return await new Promise((resolve, reject) => {
-        const r = db.transaction(OS).objectStore(OS).get(KEY);
+        const r = db.transaction(OS).objectStore(OS).get(key);
         r.onsuccess = () => resolve(r.result ? JSON.parse(r.result) : null);
         r.onerror = () => reject(r.error);
       });
     } catch (e) {
-      try { return JSON.parse(localStorage.getItem("ls.progress") || "null"); }
+      try { return JSON.parse(localStorage.getItem("ls." + key) || "null"); }
       catch (e2) { return null; }
     }
+  }
+  async function load(packId) {
+    const s = await get(keyFor(packId));
+    if (s) return s;
+    // The first build kept a single record under "main"; it was Japanese.
+    const old = await get("main");
+    return old && old.pack === packId ? old : null;
   }
 
   // Saves are coalesced: many grades in a second become one write.
@@ -44,18 +52,18 @@ LS.Store = (function () {
   }
   async function flush() {
     if (!pending) return;
-    const json = JSON.stringify(pending);
+    const json = JSON.stringify(pending), key = keyFor(pending.pack);
     pending = null;
     try {
       const db = await open();
       await new Promise((resolve, reject) => {
         const tx = db.transaction(OS, "readwrite");
-        tx.objectStore(OS).put(json, KEY);
+        tx.objectStore(OS).put(json, key);
         tx.oncomplete = resolve;
         tx.onerror = () => reject(tx.error);
       });
     } catch (e) {
-      try { localStorage.setItem("ls.progress", json); } catch (e2) { /* memory only */ }
+      try { localStorage.setItem("ls." + key, json); } catch (e2) { /* memory only */ }
     }
   }
   addEventListener("pagehide", flush);
@@ -65,7 +73,7 @@ LS.Store = (function () {
     const blob = new Blob([JSON.stringify(state, null, 1)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "language-studio-progress-" + new Date().toISOString().slice(0, 10) + ".json";
+    a.download = "language-studio-" + state.pack + "-" + new Date().toISOString().slice(0, 10) + ".json";
     document.body.appendChild(a);
     a.click();
     a.remove();

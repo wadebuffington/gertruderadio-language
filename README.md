@@ -40,12 +40,23 @@ app/writing.js        stroke canvas: watch / draw / choose
 app/games.js          Kana Rain, Match Pairs
 app/ui.js             routing, screens, settings, effects
 app/store.js          IndexedDB save, export/import
-packs/ja/pack.js      GENERATED Japanese pack (content + stroke paths)
+app/decor.js          the brush, and placing a pack's watermarks on each screen
+packs/ja/pack.js      GENERATED Japanese pack (content + stroke paths + UI words)
+packs/ja/culture.js   the Japanese look: sumi-e motifs, colours, seal, scenes
 tools/build-ja-pack.mjs   builds the pack; edit content here
 vendor/ts-fsrs.umd.js ts-fsrs 5.4.2 (MIT)
 ```
 
-Adding a language means writing a pack, not engine code. A pack is `{ id, lang, speechLang, lessons, items, credits }`, and each item is `{ id, type, form, reading, meanings, mnemonic, strokes, … }`. See `tools/build-ja-pack.mjs`.
+## One shell, many languages
+
+The interface is the same for every language. The language you're studying is picked in the top bar. It is named on the home screen with a seal, and each language keeps its own progress. Everything language-specific lives in the pack:
+
+- **`pack.js`**: content (`items`, `lessons`) and the words the shell uses (`ui.types`, `ui.games`, for example "Kana Rain").
+- **`culture.js`**: the look. It sets two watermark colours (pale green and blue for Japanese), a seal, and **motifs** drawn with the engine's brush (`LS.Decor.brush`: a centre line plus a width profile, giving a tapered ink stroke). It also has a `scenes` table that says where each motif sits on each screen.
+
+The Japanese motifs are a tanchō crane, koi, an ensō, bamboo, seigaiha waves, and the pack's own kanji (水 山 日 木) re-inked as brush calligraphy. They are faint watermarks on the page and stronger on the desk around it, and they are hidden in the one-colour Terminal and MacWrite themes and in print.
+
+Adding a language means writing these two files, not engine code. Add the two `<script>` tags in `index.html`, and the language appears in the picker.
 
 To rebuild the Japanese pack (this fetches stroke data from KanjiVG):
 
